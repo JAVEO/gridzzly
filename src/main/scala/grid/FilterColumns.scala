@@ -64,7 +64,7 @@ trait GridJsonMappings {
     def writes(filterType: FilterType) = Json.obj()
   }
 }
-//TODO zrobic zeby typ a to byl podtyp TABLE
+//TODO make A to be subtype of Table
 trait Grid[A,B,C[_]]{
   val query: Query[A,B,C]
   val columns: Seq[GridColumnTrait]
