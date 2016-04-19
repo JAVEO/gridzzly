@@ -189,7 +189,11 @@ object Gridzzly {
                 val filteredQuery = filter(query, conditions.filterBy.columns)
                 val sorted = sortBy(conditions, filteredQuery).drop((conditions.page - 1) * conditions.perPage).take(conditions.perPage).result
                 val count = countFiltered(conditions).result
-                (dbConnection.db.run(sorted), dbConnection.db.run(count))
+
+                for {
+                  result <- dbConnection.db.run(sorted)
+                  amount <- dbConnection.db.run(count)
+                } yield GridResponse[$secondType](result, amount)
               }
 
               def run(conditions: GridConditions, initialFilter: ${firstType} => Rep[Boolean] )(implicit dbConnection: DBConnection) = {
@@ -197,7 +201,11 @@ object Gridzzly {
                 val filteredQuery = filter(initialFiltered, conditions.filterBy.columns)
                 val sorted = sortBy(conditions, filteredQuery).drop((conditions.page - 1) * conditions.perPage).take(conditions.perPage).result
                 val count = countInitiallyFiltered(conditions, initialFiltered).result
-                (dbConnection.db.run(sorted), dbConnection.db.run(count))
+
+                for {
+                    result <- dbConnection.db.run(sorted)
+                    amount <- dbConnection.db.run(count)
+                } yield GridResponse[$secondType](result, amount)
               }
 
               private def countInitiallyFiltered(conditions: GridConditions, filteredQuery: MyQuery)= {
@@ -221,6 +229,7 @@ object Gridzzly {
               }
           }
             """
+
           resultCode
         }
       }

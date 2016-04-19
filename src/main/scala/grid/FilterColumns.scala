@@ -31,7 +31,6 @@ object FilterColumns {
     override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, FilterColumns]] = {
       val filterKeys = params.keys.filter(_.matches("""filterBy\[(.*?)\]""")).toList.distinct
       val parsedKeys = filterKeys.map(_.drop(9).dropRight(1))
-//      println(parsedKeys.filter(_.matches(""".*?\[(.*?)\]""")).map(x => """\[(.*?)\]""".r.findFirstMatchIn(x).get).map(_.toString().drop(1).dropRight(1)))
       val values = filterKeys.map(k => params(k).head)
       val res = FilterColumns(parsedKeys.zip(values).toMap)
 
