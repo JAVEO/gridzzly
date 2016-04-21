@@ -91,9 +91,13 @@ So GridConditions is wrapper around pagination, sorting and filtering Parameters
 ```scala
 val conditions = GridConditions(1, 10, "user.email", "desc", FilterColumns(Map("user.email"->"someemail@", "user.firstName" -> "Bob")))
 
-val result: (Future[Seq[User]], Future[Int]) = UsersGrid().run(conditions)
+val result: Future[GridResponse[User]] = UsersGrid().run(conditions)
 ```
-val result is a tuple where first element is Future with sequence of sorted, filtered, paginated users data. Second value
+
+```scala
+case class GridResponse[T](items: Seq[T], totalCount: Int)
+```
+GridResponse is a case class where first element is a sequence of sorted, filtered, paginated users data. Second value
 is amount of all users in database. This second value is useful when you are building pagination in frontend and you need this information.
 
 You need to pass somehow those values for GridConditions, you can build endpoint which accepts those. Example url:
